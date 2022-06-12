@@ -1,0 +1,36 @@
+{
+  "name": "project_registration-form",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js ",
+    "watch": "webpack -p --watch",
+    "build": "webpack -p"
+  },
+  "author": "Anar",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "css-loader": "^4.2.0",
+    "express": "^4.18.1",
+    "lit-element": "^2.4.0",
+    "mongodb": "^4.6.0",
+    "ws": "^8.7.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
+    "babel-register": "^6.26.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "eslint": "^5.1.0",
+    "html-webpack-plugin": "^4.2.0",
+    "nodemon": "^2.0.16",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  }
+}
