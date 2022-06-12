@@ -126,7 +126,13 @@ class AppSigninForm extends LitElement {
       .filter((item) => this.filter(item))
       .map((user) => {
         if (user.pass === this.pass) {
-          console.log(this.email, this.pass);
+          const senderInfo = {
+            _id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+          };
+          
+          sessionStorage.setItem("user", JSON.stringify(senderInfo));
           window.location = "#chat";
         } else {
           alert(

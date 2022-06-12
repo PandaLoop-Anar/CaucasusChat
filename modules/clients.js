@@ -101,6 +101,37 @@ class Client {
       res.status(500).send({ error: true, message: error.message });
     }
   }
+
+  // chat
+
+  static async saveMessage(req, res, params) {
+    try {
+      await DB()
+        .collection("messages")
+        .updateOne(
+          { _id: ObjectId(params._id) },
+          {
+            $set: {
+              senderId: params.senderId,
+              senderFirstName: params.senderFirstName,
+              senderLastName: params.senderLastName,
+              receivreId: params.receivreId,
+              receiverFirstName: params.receiverFirstName,
+              receiverLastName: params.receiverLastName,
+              message: params.message,
+            },
+          },
+          { upsert: true }
+        );
+      res.status(200).send({
+        success: true,
+        message: "success to post data",
+        ...params,
+      });
+    } catch (error) {
+      res.status(500).send({ error: true });
+    }
+  }
 }
 
 export { Client };

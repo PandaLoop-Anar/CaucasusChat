@@ -34,7 +34,7 @@ class ChatUserList extends LitElement {
         flex-flow: row wrap;
         align-items: center;
         min-height: 40px;
-        width: 90%;
+        width: 85%;
         padding: 5px;
         margin: 5px auto;
         background-color: #78c6f7;
