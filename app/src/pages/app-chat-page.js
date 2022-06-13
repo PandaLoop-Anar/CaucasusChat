@@ -1,6 +1,8 @@
 import { LitElement, html, css } from "lit-element";
+import { RestClient } from "../common/rest-client.js";
 import "../components/chat-user-list.js";
-import { messagesArrSocket, ws } from "../sockets.js";
+import { ws } from "../sockets.js";
+import { unsafeHTML } from "lit-html/directives/unsafe-html.js";
 
 class AppChatPage extends LitElement {
   static get is() {
@@ -37,8 +39,8 @@ class AppChatPage extends LitElement {
       messageArr: {
         type: Array,
       },
-      reload: {
-        type: Boolean,
+      messageList: {
+        type: String,
       },
     };
   }
@@ -69,14 +71,14 @@ class AppChatPage extends LitElement {
       .chat {
         padding: 5px 10px;
         background-color: #baebff;
-        overflow: auto;
+        position: relative;
       }
       .chat-scroll {
-        height: 94%;
+        height: 90%;
         overflow: auto;
       }
       .typing {
-        height: 6%;
+        height: 10%;
       }
       .messaging-bar {
         display: flex;
@@ -101,6 +103,7 @@ class AppChatPage extends LitElement {
         border: none;
       }
       .message-block {
+        display: flex;
         margin: 15px;
         position: relative;
         padding: 4px;
@@ -114,16 +117,35 @@ class AppChatPage extends LitElement {
         padding: 2px 10px;
         position: absolute;
         top: -10px;
-        left: -20px;
         font-size: 14px;
         border-radius: 11px;
-        background-color: #c18cf9;
       }
       .message-div {
-        display: inline;
+        display: block;
         padding: 5px 25px;
         border-radius: 8px;
+        position: relative;
+      }
+      .reciver-msg {
+        justify-content: flex-start;
+      }
+      .sender-msg {
+        justify-content: flex-end;
+      }
+      .reciver-msg .message-title {
+        background-color: #09ecb0;
+        left: -20px;
+      }
+      .sender-msg .message-title {
+        background-color: #c18cf9;
+        right: -20px;
+      }
+      .reciver-msg .message-div {
+        background-color: #43f5c6;
+      }
+      .sender-msg .message-div {
         background-color: #c09cfa;
+        margin-right: 25px;
       }
     `;
   }
@@ -140,25 +162,7 @@ class AppChatPage extends LitElement {
           </div>
           <div class="chat">
             <ul class="chat-scroll">
-              ${this.reload
-                ? messagesArrSocket.map((messageObj) => {
-                    return html`
-                      <li class="message-block">
-                        <div class="message-title">
-                          ${messageObj.senderFirstName}
-                        </div>
-                        <div class="message-div">${messageObj.message}</div>
-                      </li>
-                    `;
-                  })
-                : messagesArrSocket.map((messageObj) => {
-                    return html`
-                      <div>
-                        <span>${messageObj.senderFirstName}</span>
-                        <span>${messageObj.message}</span>
-                      </div>
-                    `;
-                  })}
+              ${unsafeHTML(this.messageList)}
             </ul>
             <div class="typing">${this.message ? "typing..." : ""}</div>
           </div>
@@ -166,7 +170,10 @@ class AppChatPage extends LitElement {
             <input
               type="text"
               class="chat-input"
-              placeholder="Click here to type something"
+              placeholder="${this.receivreId
+                ? "Click here to type something"
+                : "Please select a person whom you'd like to send message"}"
+              ?disabled=${!this.receivreId ? true : false}
               .value="${this.message}"
               @input="${(event) => (this.message = event.target.value)}"
             />
@@ -177,6 +184,33 @@ class AppChatPage extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  showMessages() {
+    this.messageList = this.messageArr
+      .map((messageObj) => {
+        return `
+        <li class="message-block ${
+          messageObj.senderId === this.senderId ? "sender-msg" : "reciver-msg"
+        }">
+          <div class="message-div">
+          <div class="message-title">${messageObj.senderFirstName}</div>
+          <span>${messageObj.message}</span>
+          </div>
+        </li>
+      `;
+      })
+      .join("");
+  }
+
+  filter(item) {
+    if (!this.senderId) {
+      return true;
+    }
+    const regex = new RegExp(this.senderId, "i");
+    const regexi = new RegExp(this.receivreId, "i");
+    const response = regex.test(item.senderId) && regexi.test(item.receiverId);
+    return response;
   }
 
   sendMessage() {
@@ -194,9 +228,6 @@ class AppChatPage extends LitElement {
     // console.log(messageInfo);
     ws.send(JSON.stringify(messageInfo));
     this.message = "";
-    // this.messageArr.push(...messagesArrSocket);
-    this.reload = true;
-    console.log(messagesArrSocket);
   }
 
   callChat(event) {
@@ -218,9 +249,24 @@ class AppChatPage extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // if (this.message) {
-    //   this.messageArr.push(...messagesArrSocket);
-    // }
+
+    ws.addEventListener("message", (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log("Message from server", data);
+
+        this.messageArr.push(data);
+        this.showMessages();
+        // RestClient.call("/api/client/getMessages")
+        // .then((result) => {
+        //   console.log(result);
+        //   this.messageArr = result;
+        // })
+        // .catch((error) => console.log(error));
+      } catch (exception) {
+        console.error(exception.message);
+      }
+    });
   }
 
   constructor() {
@@ -234,7 +280,7 @@ class AppChatPage extends LitElement {
     this.senderFirstName = "";
     this.senderLastName = "";
     this.messageArr = [];
-    this.reload = true;
+    this.messageList = "";
   }
 }
 

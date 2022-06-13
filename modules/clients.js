@@ -15,7 +15,7 @@ class Client {
   }
   static async updateClientData(req, res) {
     try {
-      await DB().collection("users").deleteMany();
+      // await DB().collection("users").deleteMany();
       await DB()
         .collection("users")
         .insertMany([
@@ -103,26 +103,26 @@ class Client {
   }
 
   // chat
-
+  static async getMessages(req, res) {
+    try {
+      const users = await DB().collection("messages").find().toArray();
+      res.status(200).send(JSON.stringify(users));
+    } catch (exception) {
+      console.error(exception.message);
+      res.status(500).send();
+    }
+  }
   static async saveMessage(req, res, params) {
     try {
-      await DB()
-        .collection("messages")
-        .updateOne(
-          { _id: ObjectId(params._id) },
-          {
-            $set: {
-              senderId: params.senderId,
-              senderFirstName: params.senderFirstName,
-              senderLastName: params.senderLastName,
-              receivreId: params.receivreId,
-              receiverFirstName: params.receiverFirstName,
-              receiverLastName: params.receiverLastName,
-              message: params.message,
-            },
-          },
-          { upsert: true }
-        );
+      await DB().collection("messages").insertOne({
+        senderId: params.senderId,
+        senderFirstName: params.senderFirstName,
+        senderLastName: params.senderLastName,
+        receivreId: params.receivreId,
+        receiverFirstName: params.receiverFirstName,
+        receiverLastName: params.receiverLastName,
+        message: params.message,
+      });
       res.status(200).send({
         success: true,
         message: "success to post data",
