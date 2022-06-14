@@ -98,7 +98,7 @@ class AppMainPage extends LitElement {
 
   constructor() {
     super();
-    this.tooltip = `Hello world!`;
+    this.tooltip = `Main - sign in page `;
   }
 }
 

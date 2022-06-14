@@ -162,6 +162,7 @@ class AppUserlist extends LitElement {
     if (!this.searchTerm) {
       return true;
     }
+
     const regex = new RegExp(this.searchTerm, "i");
     const response =
       regex.test(item.firstName) ||
@@ -229,7 +230,7 @@ class AppUserlist extends LitElement {
   }
   constructor() {
     super();
-    this.tooltip = `Hello world!`;
+    this.tooltip = `Sign up - user list`;
     this.users = [];
   }
 

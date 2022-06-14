@@ -65,7 +65,7 @@ class AppSignupPage extends LitElement {
 
   constructor() {
     super();
-    this.tooltip = `Hello world!`;
+    this.tooltip = `Sign up page`;
   }
 }
 

@@ -51,14 +51,18 @@ class AppChatPage extends LitElement {
         flex-direction: column;
       }
       .chat-section {
-        height: 75vh;
+        /* height: 75vh; */
         display: grid;
         grid-template-columns: 210px 1fr;
         grid-gap: 15px;
         padding: 10px;
         background-color: #f5f5f5;
       }
+      .chat-list-block {
+        height: 100%;
+      }
       .chat-block {
+        height: 100%;
         display: grid;
         grid-template-rows: 40px 62vh 60px;
       }
@@ -147,13 +151,34 @@ class AppChatPage extends LitElement {
         background-color: #c09cfa;
         margin-right: 25px;
       }
+      @media (max-width: 1024px) {
+        .chat-section {
+          grid-template-columns: 190px 1fr;
+          grid-gap: 10px;
+        }
+        .send-btn {
+          padding: 5px 18px;
+          font-size: 17px;
+        }
+      }
+      @media (max-width: 600px) {
+        .chat-section {
+          grid-template-columns: 1fr;
+          grid-template-rows: 0.8fr 1fr;
+          grid-gap: 10px;
+        }
+        .send-btn {
+          padding: 4px 10px;
+          font-size: 15px;
+        }
+      }
     `;
   }
 
   render() {
     return html`
       <div class="chat-section" @start-chatting-user="${this.callChat}">
-        <div>
+        <div class="chat-list-block">
           <chat-user-list></chat-user-list>
         </div>
         <div class="chat-block">
@@ -192,14 +217,24 @@ class AppChatPage extends LitElement {
 
   filter(item) {
     let response;
-    if (
-      (this.receiverId === item.senderId &&
-        this.senderId === item.receiverId) ||
-      (this.senderId === item.senderId && this.receiverId === item.receiverId)
-    ) {
-      response = true;
+    if (this.receiverId === "62a87dc0eeb5f952443c24b9") {
+      // All users chat
+      if (item.receiverId === this.receiverId) {
+        response = true;
+      } else {
+        response = false;
+      }
     } else {
-      response = false;
+      // private chat
+      if (
+        (this.receiverId === item.senderId &&
+          this.senderId === item.receiverId) ||
+        (this.senderId === item.senderId && this.receiverId === item.receiverId)
+      ) {
+        response = true;
+      } else {
+        response = false;
+      }
     }
 
     return response;
@@ -210,7 +245,6 @@ class AppChatPage extends LitElement {
     RestClient.call("/api/client/getMessages")
       .then((result) => {
         this.messageArr = result;
-        // console.log(result);
 
         this.showMessages();
       })
@@ -236,7 +270,6 @@ class AppChatPage extends LitElement {
   }
 
   sendMessage() {
-    this.reload = false;
     const messageInfo = {
       senderId: this.senderId,
       senderFirstName: this.senderFirstName,
@@ -246,7 +279,7 @@ class AppChatPage extends LitElement {
       receiverLastName: this.receiverLastName,
       message: this.message,
     };
-    // console.log(messageInfo);
+
     this.saveMsg(messageInfo);
     ws.send(JSON.stringify(messageInfo));
     this.message = "";
@@ -260,7 +293,6 @@ class AppChatPage extends LitElement {
     this.receiverLastName = user.lastName;
 
     this.getMsg();
-    // this.showMessages();
   }
 
   setSenderInfo() {
@@ -287,10 +319,6 @@ class AppChatPage extends LitElement {
 
         this.messageArr.push(data);
         this.showMessages();
-        // Saving in database
-        // this.saveMsg(data);
-
-        // this.getMsg();
       } catch (exception) {
         console.error(exception.message);
       }
@@ -299,7 +327,7 @@ class AppChatPage extends LitElement {
 
   constructor() {
     super();
-    this.tooltip = `Hello world!`;
+    this.tooltip = `Chat page`;
     this.receiverId = "";
     this.receiverFirstName = "";
     this.receiverLastName = "";

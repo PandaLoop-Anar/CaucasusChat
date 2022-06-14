@@ -145,7 +145,7 @@ class ChatUserList extends LitElement {
   }
   constructor() {
     super();
-    this.tooltip = `Hello world!`;
+    this.tooltip = `Chat - user list`;
     this.users = [];
   }
 }

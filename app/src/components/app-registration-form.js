@@ -525,7 +525,7 @@ class AppRegistrationForm extends LitElement {
 
   constructor() {
     super();
-    this.tooltip = "Hello world!";
+    this.tooltip = "Regitration form";
     this.emptyInputValues();
     this.countries = [];
   }

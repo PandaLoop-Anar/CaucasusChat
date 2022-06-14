@@ -159,7 +159,7 @@ class AppSigninForm extends LitElement {
 
   constructor() {
     super();
-    this.tooltip = `Hello world`;
+    this.tooltip = `Sign in form`;
     this.emptyInputValues();
   }
 }

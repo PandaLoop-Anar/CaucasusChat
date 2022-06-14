@@ -83,9 +83,13 @@ class AppRoot extends LitElement {
         }
         .logo-img {
           width: 50px;
+          margin: 0 5px;
+        }
+        .logo h1 {
+          font-size: 21px;
         }
         .nav-bar a {
-          padding: 2px 15px;
+          padding: 2px 8px;
           font-size: 15px;
         }
       }
@@ -107,7 +111,10 @@ class AppRoot extends LitElement {
             </div>
             <div class="nav-bar">
               <a href="#main">Main</a> |
-              ${this.checkLogedinUser() ? html`<a href="#chat">Chat</a> |` : ""}
+              ${this.checkLogedinUser()
+                ? html`<a href="#chat">Chat</a> |
+                    <a href="#main" @click="${this.signOut}">Sign out</a> |`
+                : ""}
               <a href="#signUp">Sign Up</a>
             </div>
           </div>
@@ -133,6 +140,10 @@ class AppRoot extends LitElement {
     } else {
       return true;
     }
+  }
+
+  signOut() {
+    sessionStorage.removeItem("user");
   }
 
   constructor() {
