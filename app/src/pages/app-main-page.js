@@ -30,7 +30,7 @@ class AppMainPage extends LitElement {
         background-image: url(https://i.pinimg.com/originals/08/80/99/08809940d40530bfdb457d7a60466657.jpg);
         background-size: cover;
         min-height: 700px;
-        width: 500px;
+        width: 100%;
       }
       .section-img-h2 {
         text-align: center;
@@ -51,6 +51,20 @@ class AppMainPage extends LitElement {
         margin-bottom: 60px;
         text-shadow: 3px 3px 18px;
         text-align: center;
+      }
+      @media (max-width: 1024px) {
+        .section {
+          grid-template-columns: 1fr 1.3fr;
+        }
+      }
+      @media (max-width: 600px) {
+        .section {
+          grid-template-columns: 1fr;
+          grid-template-rows: 0.5fr 1fr;
+        }
+        .section-img {
+          min-height: 300px;
+        }
       }
     `;
   }

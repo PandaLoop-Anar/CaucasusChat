@@ -211,10 +211,7 @@ class AppChatPage extends LitElement {
       .then((result) => {
         this.messageArr = result;
         // console.log(result);
-        // result
-        //   .filter((item) => this.filter(item))
-        //   .map((msgData) => this.messageArr.push(msgData));
-        // console.log(this.messageArr);
+
         this.showMessages();
       })
       .catch((error) => console.log(error));
@@ -261,9 +258,7 @@ class AppChatPage extends LitElement {
     this.receiverId = user._id;
     this.receiverFirstName = user.firstName;
     this.receiverLastName = user.lastName;
-    // const chati = this.shadowRoot.getElementById("chati");
-    // console.log(user, chati);
-    // chati.setReceiverData(user);
+
     this.getMsg();
     // this.showMessages();
   }

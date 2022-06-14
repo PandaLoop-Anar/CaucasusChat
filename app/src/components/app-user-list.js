@@ -45,8 +45,8 @@ class AppUserlist extends LitElement {
       .gird_header-row,
       .grid_user-row {
         display: grid;
-        grid-template-columns: 30px repeat(3, 1fr) 200px repeat(4, 1fr);
-        grid-gap: 7px;
+        grid-template-columns: 30px repeat(3, 1fr) 180px repeat(4, 1fr);
+        grid-gap: 4px;
       }
       .gird_header-row span {
         font-weight: bold;

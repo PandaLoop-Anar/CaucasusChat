@@ -50,6 +50,22 @@ class AppRoot extends LitElement {
         width: 80px;
         margin: 0 20px;
       }
+      .nav-bar {
+        margin: 10px 5px;
+      }
+      .nav-bar a {
+        padding: 5px 15px;
+        text-decoration: none;
+        text-align: center;
+        font-size: 17px;
+        border-radius: 15px;
+        background-color: #4eb4b6;
+        color: snow;
+        border: none;
+      }
+      .nav-bar a:hover {
+        box-shadow: 0.5px 1px 5px black;
+      }
 
       @media (max-width: 1024px) {
         .container {
@@ -61,6 +77,16 @@ class AppRoot extends LitElement {
           display: flex;
           flex-flow: column;
           width: 100vw;
+        }
+        .header-block {
+          justify-content: center;
+        }
+        .logo-img {
+          width: 50px;
+        }
+        .nav-bar a {
+          padding: 2px 15px;
+          font-size: 15px;
         }
       }
     `;
@@ -80,7 +106,8 @@ class AppRoot extends LitElement {
               <h1>CaucasusChat</h1>
             </div>
             <div class="nav-bar">
-              <a href="#main">Main</a> | <a href="#chat">Chat</a> |
+              <a href="#main">Main</a> |
+              ${this.checkLogedinUser() ? html`<a href="#chat">Chat</a> |` : ""}
               <a href="#signUp">Sign Up</a>
             </div>
           </div>
@@ -97,6 +124,17 @@ class AppRoot extends LitElement {
       </main>
     `;
   }
+
+  checkLogedinUser() {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    if (user === null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   constructor() {
     super();
     this.page = "main";

@@ -23,6 +23,15 @@ class ChatUserList extends LitElement {
         flex-direction: column;
         background-color: #dce9fc;
       }
+      .title {
+        text-align: center;
+      }
+      .search-bar input {
+        margin: 0 15px;
+        padding: 2px 5px;
+        border: none;
+        border-radius: 8px;
+      }
       .users-info_list {
         height: 60vh;
         overflow: auto;

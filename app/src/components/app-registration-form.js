@@ -100,6 +100,7 @@ class AppRegistrationForm extends LitElement {
         margin: 0 20px;
         font-size: 18px;
         border: none;
+        border-radius: 11px;
       }
       .submit-btn {
         background-color: rgb(128, 240, 128);
