@@ -118,7 +118,7 @@ class Client {
         senderId: params.senderId,
         senderFirstName: params.senderFirstName,
         senderLastName: params.senderLastName,
-        receivreId: params.receivreId,
+        receiverId: params.receiverId,
         receiverFirstName: params.receiverFirstName,
         receiverLastName: params.receiverLastName,
         message: params.message,

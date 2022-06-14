@@ -60,7 +60,7 @@ class AppChatPage extends LitElement {
       }
       .chat-block {
         display: grid;
-        grid-template-rows: 40px 1fr 60px;
+        grid-template-rows: 40px 62vh 60px;
       }
       .chat-header {
         display: flex;
@@ -170,15 +170,19 @@ class AppChatPage extends LitElement {
             <input
               type="text"
               class="chat-input"
-              placeholder="${this.receivreId
+              placeholder="${this.receiverId
                 ? "Click here to type something"
                 : "Please select a person whom you'd like to send message"}"
-              ?disabled=${!this.receivreId ? true : false}
+              ?disabled=${!this.receiverId ? true : false}
               .value="${this.message}"
               @input="${(event) => (this.message = event.target.value)}"
             />
-            <button class="btn send-btn" @click="${this.sendMessage}">
-              send
+            <button
+              class="btn send-btn"
+              @click="${this.sendMessage}"
+              ?disabled=${!this.message ? true : false}
+            >
+              ⇈ send
             </button>
           </div>
         </div>
@@ -186,8 +190,39 @@ class AppChatPage extends LitElement {
     `;
   }
 
+  filter(item) {
+    let response;
+    if (
+      (this.receiverId === item.senderId &&
+        this.senderId === item.receiverId) ||
+      (this.senderId === item.senderId && this.receiverId === item.receiverId)
+    ) {
+      response = true;
+    } else {
+      response = false;
+    }
+
+    return response;
+  }
+
+  getMsg() {
+    this.messageArr = [];
+    RestClient.call("/api/client/getMessages")
+      .then((result) => {
+        this.messageArr = result;
+        // console.log(result);
+        // result
+        //   .filter((item) => this.filter(item))
+        //   .map((msgData) => this.messageArr.push(msgData));
+        // console.log(this.messageArr);
+        this.showMessages();
+      })
+      .catch((error) => console.log(error));
+  }
+
   showMessages() {
     this.messageList = this.messageArr
+      .filter((item) => this.filter(item))
       .map((messageObj) => {
         return `
         <li class="message-block ${
@@ -203,41 +238,34 @@ class AppChatPage extends LitElement {
       .join("");
   }
 
-  filter(item) {
-    if (!this.senderId) {
-      return true;
-    }
-    const regex = new RegExp(this.senderId, "i");
-    const regexi = new RegExp(this.receivreId, "i");
-    const response = regex.test(item.senderId) && regexi.test(item.receiverId);
-    return response;
-  }
-
   sendMessage() {
     this.reload = false;
-    this.setSenderInfo();
     const messageInfo = {
       senderId: this.senderId,
       senderFirstName: this.senderFirstName,
       senderLastName: this.senderLastName,
-      receivreId: this.receivreId,
+      receiverId: this.receiverId,
       receiverFirstName: this.receiverFirstName,
       receiverLastName: this.receiverLastName,
       message: this.message,
     };
     // console.log(messageInfo);
+    this.saveMsg(messageInfo);
     ws.send(JSON.stringify(messageInfo));
     this.message = "";
   }
 
   callChat(event) {
+    this.setSenderInfo();
     const user = event.detail;
-    this.receivreId = user._id;
+    this.receiverId = user._id;
     this.receiverFirstName = user.firstName;
     this.receiverLastName = user.lastName;
     // const chati = this.shadowRoot.getElementById("chati");
     // console.log(user, chati);
     // chati.setReceiverData(user);
+    this.getMsg();
+    // this.showMessages();
   }
 
   setSenderInfo() {
@@ -245,6 +273,13 @@ class AppChatPage extends LitElement {
     this.senderId = sender._id;
     this.senderFirstName = sender.firstName;
     this.senderLastName = sender.lastName;
+  }
+  saveMsg(data) {
+    RestClient.call("/api/client/saveMessage", data)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => console.log(error));
   }
 
   connectedCallback() {
@@ -257,12 +292,10 @@ class AppChatPage extends LitElement {
 
         this.messageArr.push(data);
         this.showMessages();
-        // RestClient.call("/api/client/getMessages")
-        // .then((result) => {
-        //   console.log(result);
-        //   this.messageArr = result;
-        // })
-        // .catch((error) => console.log(error));
+        // Saving in database
+        // this.saveMsg(data);
+
+        // this.getMsg();
       } catch (exception) {
         console.error(exception.message);
       }
@@ -272,7 +305,7 @@ class AppChatPage extends LitElement {
   constructor() {
     super();
     this.tooltip = `Hello world!`;
-    this.receivreId = "";
+    this.receiverId = "";
     this.receiverFirstName = "";
     this.receiverLastName = "";
     this.message = "";
