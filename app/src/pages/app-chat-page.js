@@ -42,6 +42,9 @@ class AppChatPage extends LitElement {
       messageList: {
         type: String,
       },
+      errorMessage: {
+        type: String,
+      },
     };
   }
   static get styles() {
@@ -51,7 +54,6 @@ class AppChatPage extends LitElement {
         flex-direction: column;
       }
       .chat-section {
-        /* height: 75vh; */
         display: grid;
         grid-template-columns: 210px 1fr;
         grid-gap: 15px;
@@ -189,7 +191,9 @@ class AppChatPage extends LitElement {
             <ul class="chat-scroll">
               ${unsafeHTML(this.messageList)}
             </ul>
-            <div class="typing">${this.message ? "typing..." : ""}</div>
+            <div class="typing">
+              ${this.message ? "typing..." : ""} ${this.errorMessage}
+            </div>
           </div>
           <div class="messaging-bar">
             <input
@@ -301,12 +305,17 @@ class AppChatPage extends LitElement {
     this.senderFirstName = sender.firstName;
     this.senderLastName = sender.lastName;
   }
+
   saveMsg(data) {
     RestClient.call("/api/client/saveMessage", data)
       .then((result) => {
+        this.errorMessage = "";
         console.log(result);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        this.errorMessage = "The Message has not sent, try again!";
+        console.log(error);
+      });
   }
 
   connectedCallback() {
@@ -337,6 +346,7 @@ class AppChatPage extends LitElement {
     this.senderLastName = "";
     this.messageArr = [];
     this.messageList = "";
+    this.errorMessage = "";
   }
 }
 

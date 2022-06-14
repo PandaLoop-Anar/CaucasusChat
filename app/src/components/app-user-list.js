@@ -16,12 +16,14 @@ class AppUserlist extends LitElement {
       searchTerm: { type: String },
     };
   }
+
   static get styles() {
     return css`
       :host {
         display: flex;
         flex-direction: column;
       }
+
       .users-info_header {
         padding: 10px;
         display: flex;
@@ -62,6 +64,7 @@ class AppUserlist extends LitElement {
       .btn {
         cursor: pointer;
       }
+
       input {
         height: 24px;
         width: 220px;
@@ -69,6 +72,13 @@ class AppUserlist extends LitElement {
         font-size: 16px;
         background-color: antiquewhite;
         border: 2px solid transparent;
+      }
+      @media (max-width: 1024px) {
+        .gird_header-row,
+        .grid_user-row {
+          grid-template-rows: 1fr 1fr;
+          grid-template-columns: repeat(4, 1fr) 150px;
+        }
       }
     `;
   }
@@ -105,8 +115,8 @@ class AppUserlist extends LitElement {
               (user, index) =>
                 html`
                   <div class="grid_user-row">
-                    <span>${index + 1}</span>
-                    <span>${user.firstName} ${user.lastName}</span>
+                    <span><b>${index + 1}</b></span>
+                    <span><b>${user.firstName} ${user.lastName}</b></span>
                     <span>${user.gender}</span>
                     <span
                       >${user.dateOfBirth
@@ -192,7 +202,6 @@ class AppUserlist extends LitElement {
   getUserList() {
     RestClient.call("/api/client/getClientInfo")
       .then((result) => {
-        console.log(result);
         this.users = result;
       })
       .catch((error) => console.log(error));
@@ -235,7 +244,7 @@ class AppUserlist extends LitElement {
   }
 
   callUserList(user) {
-    console.log(user);
+    // console.log(user);
     this.getUserList();
   }
 }

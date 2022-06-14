@@ -51,7 +51,7 @@ class AppSignupPage extends LitElement {
   }
 
   editUser(event) {
-    console.log(event);
+    // console.log(event);
     const user = event.detail;
     const form = this.shadowRoot.getElementById("form");
     form.setUserData(user);

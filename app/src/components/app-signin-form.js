@@ -26,12 +26,6 @@ class AppSigninForm extends LitElement {
         width: 300px;
         text-align: left;
       }
-      // :host([title]) {
-      //   background-color: rgb(250, 238, 220);
-      // }
-      // :host(:hover) {
-      //   background-color: rgb(246, 225, 193);
-      // }
       #fpass {
         float: right;
       }
@@ -87,7 +81,6 @@ class AppSigninForm extends LitElement {
           type="text"
           name="login"
           id="login"
-          required
           @input="${(event) => (this.email = event.target.value)}"
         />
         <label for="pass">Password</label>
@@ -95,7 +88,6 @@ class AppSigninForm extends LitElement {
           type="password"
           name="pass"
           id="pass"
-          required
           @input="${(event) => (this.pass = event.target.value)}"
         />
 
@@ -131,7 +123,7 @@ class AppSigninForm extends LitElement {
             firstName: user.firstName,
             lastName: user.lastName,
           };
-          
+
           sessionStorage.setItem("user", JSON.stringify(senderInfo));
           window.location = "#chat";
         } else {
@@ -146,7 +138,7 @@ class AppSigninForm extends LitElement {
     super.connectedCallback();
     RestClient.call("/api/client/getClientInfo")
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         this.users = result;
       })
       .catch((error) => console.log(error));

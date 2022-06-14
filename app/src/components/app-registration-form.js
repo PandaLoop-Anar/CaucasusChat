@@ -394,7 +394,7 @@ class AppRegistrationForm extends LitElement {
       }
     }
     if (fieldname === "pass") {
-      const regex = new RegExp("(?=.*d)(?=.*[a-z])(?=.*[A-Z]).{8,}");
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
       const response = regex.test(this.pass);
       const message =
         "New password must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters.";

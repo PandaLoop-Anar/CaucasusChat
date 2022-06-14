@@ -81,7 +81,7 @@ class ChatUserList extends LitElement {
                 >
                   <img
                     src="./assets/blank-profile-picture-973460_640.png"
-                    alt="profil img"
+                    alt="profile-img"
                     class="profile-img"
                   />
                   <span>${user.firstName} ${user.lastName}</span>
@@ -124,7 +124,7 @@ class ChatUserList extends LitElement {
   getUserList() {
     RestClient.call("/api/client/getClientInfo")
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         this.users = result;
       })
       .catch((error) => console.log(error));
@@ -143,6 +143,7 @@ class ChatUserList extends LitElement {
     super.connectedCallback();
     this.getUserList();
   }
+
   constructor() {
     super();
     this.tooltip = `Chat - user list`;
